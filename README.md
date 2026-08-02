@@ -3,6 +3,9 @@
 ## Overview
 "Custom Filter By Oswald" is a WooCommerce plugin that provides a customizable product filtering system. This plugin allows users to filter products based on search terms, stock status, price range, and product categories.
 
+## Screenshots
+!["Screenshot"](screenshot.png)
+
 ## Installation
 1. Download the plugin files.
 2. Upload the `custom-filter-by-oswald` folder to the `/wp-content/plugins/` directory of your WordPress installation.
@@ -33,6 +36,7 @@ custom-filter-by-oswald
 ├── templates
 │   └── filter-widget.php
 ├── custom-filter.php
+├── index.html
 └── README.md
 ```
 
@@ -41,6 +45,4 @@ custom-filter-by-oswald
 - **templates/filter-widget.php**: Contains the HTML structure and PHP logic for the filter widget, retrieves product categories, and includes options for filtering.
 - **assets/filter.js**: Handles the interactive elements of the filter widget, including toggling visibility and managing the price range slider.
 - **assets/filter.css**: Styles the filter widget to ensure it is visually appealing and user-friendly.
-
-## Support
-For any issues or feature requests, please contact the author at [Oswald's contact information].
+- **index.html**: Standalone filter alternative
