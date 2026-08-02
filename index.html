@@ -1,0 +1,323 @@
+<div id="oa-filters">
+
+    <!-- SEARCH -->
+    <div class="oa-search-box">
+        <svg class="oa-icon" viewBox="0 0 24 24">
+            <path fill="currentColor"
+                d="M15.5 14h-.79l-.28-.27
+                A6.471 6.471 0 0 0 16 9.5
+                6.5 6.5 0 1 0 9.5 16
+                a6.471 6.471 0 0 0 4.23-1.57
+                l.27.28v.79l5 4.99L20.49 19
+                l-4.99-5zm-6 0C7.01 14 5 11.99
+                5 9.5S7.01 5 9.5 5
+                14 7.01 14 9.5
+                11.99 14 9.5 14z"/>
+        </svg>
+
+        <input type="text" id="oa-search" placeholder="Search products...">
+    </div>
+
+    <!-- CATEGORY -->
+    <select id="oa-category-filter">
+        <option value="all">All Categories</option>
+    </select>
+
+    <!-- STOCK TOGGLE -->
+    <div class="oa-stock-toggle">
+
+        <div class="oa-toggle">
+            <input type="checkbox" id="oa-instock" checked>
+            <label for="oa-instock">In Stock</label>
+        </div>
+
+        <div class="oa-toggle">
+            <input type="checkbox" id="oa-outofstock" checked>
+            <label for="oa-outofstock">Out of Stock</label>
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+#oa-filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    align-items:center;
+    width:100%;
+    margin-bottom:24px;
+    padding:14px;
+    border-radius:14px;
+    background:#fff;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* SEARCH */
+.oa-search-box{
+    position:relative;
+    flex:1;
+    min-width:240px;
+}
+
+.oa-icon{
+    position:absolute;
+    left:16px;
+    top:50%;
+    width:18px;
+    height:18px;
+    transform:translateY(-50%);
+    color:#9aa0a6;
+}
+
+#oa-search{
+    width:100%;
+    height:48px;
+    padding:0 16px 0 44px;
+    border:1px solid #eee;
+    border-radius:10px;
+    font-size:14px;
+    outline:none;
+    background:#fafafa;
+    transition:.2s ease;
+}
+
+#oa-search:focus{
+    background:#fff;
+    border-color:#111;
+    box-shadow:0 0 0 3px rgba(0,0,0,0.05);
+}
+
+/* CATEGORY */
+#oa-category-filter{
+    height:48px;
+    padding:0 14px;
+    border:1px solid #eee;
+    border-radius:10px;
+    background:#fafafa;
+    min-width:180px;
+    font-size:14px;
+    outline:none;
+    transition:.2s ease;
+    cursor:pointer;
+}
+
+#oa-category-filter:focus{
+    background:#fff;
+    border-color:#111;
+    box-shadow:0 0 0 3px rgba(0,0,0,0.05);
+}
+
+/* TOGGLES WRAPPER */
+.oa-stock-toggle{
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+
+/* HIDE REAL CHECKBOX */
+.oa-toggle input{
+    display:none;
+}
+
+/* PILL STYLE LABEL */
+.oa-toggle label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 14px;
+    border-radius:999px;
+    border:1px solid #eee;
+    background:#fafafa;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:500;
+    transition:.2s ease;
+    user-select:none;
+}
+
+/* CHECK ICON */
+.oa-toggle label::before{
+    content:"";
+    width:14px;
+    height:14px;
+    border-radius:4px;
+    border:1.5px solid #bbb;
+    display:inline-block;
+    transition:.2s ease;
+    background:#fff;
+}
+
+/* CHECKED STATE */
+.oa-toggle input:checked + label{
+    background:#111;
+    color:#fff;
+    border-color:#111;
+}
+
+.oa-toggle input:checked + label::before{
+    background:#fff;
+    border-color:#fff;
+    box-shadow:inset 0 0 0 3px #111;
+}
+
+/* PRODUCTS */
+.product{
+    transition:.25s ease;
+}
+
+.oa-hidden{
+    display:none !important;
+}
+</style>
+
+<script>
+(function(){
+
+    const search = document.getElementById('oa-search');
+    const categoryFilter = document.getElementById('oa-category-filter');
+    const instock = document.getElementById('oa-instock');
+    const outofstock = document.getElementById('oa-outofstock');
+
+    function getProducts(){
+        return document.querySelectorAll('.product');
+    }
+
+    // ---------------------------
+    // BUILD CATEGORIES
+    // ---------------------------
+    function buildCategories(){
+
+        const set = new Set();
+
+        getProducts().forEach(p => {
+
+            p.classList.forEach(cls => {
+                if(cls.startsWith('product_cat-')){
+                    set.add(cls.replace('product_cat-',''));
+                }
+            });
+
+            if(p.dataset.category){
+                set.add(p.dataset.category);
+            }
+
+        });
+
+        categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+
+        set.forEach(cat => {
+
+            const formatted = cat
+                .replace(/-/g,' ')
+                .replace(/\b\w/g, l => l.toUpperCase());
+
+            const opt = document.createElement('option');
+            opt.value = cat.toLowerCase();
+            opt.textContent = formatted;
+
+            categoryFilter.appendChild(opt);
+        });
+
+    }
+
+    // ---------------------------
+    // STOCK CHECK
+    // ---------------------------
+    function isInStock(product){
+
+        if(product.classList.contains('instock')) return true;
+        if(product.classList.contains('outofstock')) return false;
+
+        if(product.dataset.stock){
+            return product.dataset.stock === 'instock';
+        }
+
+        return true;
+    }
+
+    // ---------------------------
+    // FILTER ENGINE
+    // ---------------------------
+    function filter(){
+
+        const term = search.value.toLowerCase();
+        const cat = categoryFilter.value.toLowerCase();
+        const allowIn = instock.checked;
+        const allowOut = outofstock.checked;
+
+        getProducts().forEach(product => {
+
+            const titleEl = product.querySelector(
+                '.woocommerce-loop-product__title'
+            );
+
+            const title = titleEl
+                ? titleEl.innerText.toLowerCase()
+                : '';
+
+            let cats = [...product.classList]
+                .filter(c => c.startsWith('product_cat-'))
+                .map(c => c.replace('product_cat-',''));
+
+            if(product.dataset.category){
+                cats.push(product.dataset.category);
+            }
+
+            const matchCat =
+                cat === 'all' ||
+                cats.includes(cat);
+
+            const matchSearch =
+                title.includes(term);
+
+            const stock = isInStock(product);
+
+            const matchStock =
+                (stock && allowIn) ||
+                (!stock && allowOut);
+
+            if(matchCat && matchSearch && matchStock){
+                product.classList.remove('oa-hidden');
+            } else {
+                product.classList.add('oa-hidden');
+            }
+
+        });
+
+    }
+
+    // ---------------------------
+    // INIT (LIVE SAFE)
+    // ---------------------------
+    function initWhenReady(){
+
+        const check = setInterval(() => {
+
+            const products = document.querySelectorAll('.product');
+
+            if(products.length > 0){
+
+                buildCategories();
+                filter();
+
+                clearInterval(check);
+            }
+
+        }, 300);
+
+    }
+
+    // ---------------------------
+    // EVENTS
+    // ---------------------------
+    search.addEventListener('input', filter);
+    categoryFilter.addEventListener('change', filter);
+    instock.addEventListener('change', filter);
+    outofstock.addEventListener('change', filter);
+
+    document.addEventListener('DOMContentLoaded', initWhenReady);
+
+})();
+</script>
