@@ -33,6 +33,7 @@ custom-filter-by-oswald
 ├── templates
 │   └── filter-widget.php
 ├── custom-filter.php
+├── index.html
 └── README.md
 ```
 
@@ -41,6 +42,4 @@ custom-filter-by-oswald
 - **templates/filter-widget.php**: Contains the HTML structure and PHP logic for the filter widget, retrieves product categories, and includes options for filtering.
 - **assets/filter.js**: Handles the interactive elements of the filter widget, including toggling visibility and managing the price range slider.
 - **assets/filter.css**: Styles the filter widget to ensure it is visually appealing and user-friendly.
-
-## Support
-For any issues or feature requests, please contact the author at [Oswald's contact information].
+- **index.html**: Standalone filter alternative
